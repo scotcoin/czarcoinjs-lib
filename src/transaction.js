@@ -19,12 +19,14 @@ Transaction.SIGHASH_NONE = 0x02
 Transaction.SIGHASH_SINGLE = 0x03
 Transaction.SIGHASH_ANYONECANPAY = 0x80
 
-Transaction.prototype.addInput = function(hash, index, sequence) {
+Transaction.prototype.addInput = function(hash, index, sequence, script) {
   if (sequence === undefined) sequence = Transaction.DEFAULT_SEQUENCE
+  script = script || Script.EMPTY
 
   enforceType('Buffer', hash)
   enforceType('Number', index)
   enforceType('Number', sequence)
+  enforceType(Script, script)
 
   assert.equal(hash.length, 32, 'Expected hash length of 32, got ' + hash.length)
 
@@ -32,7 +34,7 @@ Transaction.prototype.addInput = function(hash, index, sequence) {
   return (this.ins.push({
     hash: hash,
     index: index,
-    script: Script.EMPTY,
+    script: script,
     sequence: sequence
   }) - 1)
 }
